@@ -1,9 +1,9 @@
-# claude-glance installer for Windows (PowerShell 5.1+)
+# custom-claude-glance installer for Windows (PowerShell 5.1+)
 #
 #   One-liner (global):
-#     irm https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.ps1 | iex
+#     irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 | iex
 #   One-liner with options:
-#     & ([scriptblock]::Create((irm https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.ps1))) -AllAccounts
+#     & ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -AllAccounts
 #   From a clone:
 #     .\install.ps1 [-Project [-Path <folder>]] [-AllAccounts] [-Uninstall]
 
@@ -15,7 +15,7 @@ param(
 )
 $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
-$Repo = "YOUR_GITHUB_USERNAME/claude-glance"
+$Repo = "trongld230289/custom-claude-glance"
 $Branch = "main"
 
 # Find Python 3 (prefer the py launcher; "python" can be the Microsoft Store stub)
@@ -33,7 +33,7 @@ $src = $null
 if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "glance.py"))) {
     $src = $PSScriptRoot
 } else {
-    $src = Join-Path ([IO.Path]::GetTempPath()) "claude-glance"
+    $src = Join-Path ([IO.Path]::GetTempPath()) "custom-claude-glance"
     New-Item -ItemType Directory -Force -Path $src | Out-Null
     foreach ($f in @("glance.py", "install.py")) {
         Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/$Repo/$Branch/$f" -OutFile (Join-Path $src $f)

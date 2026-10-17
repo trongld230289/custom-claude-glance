@@ -1,8 +1,8 @@
-# claude-glance
+# custom-claude-glance
 
 A colourful 3-line status line for [Claude Code](https://code.claude.com/docs/en/statusline): everything you want to know about your session, at a glance.
 
-![claude-glance preview](assets/preview.png)
+![custom-claude-glance preview](assets/preview.png)
 
 ```
 ✦ Opus 5.5  ·  high ●●●○○  ·  ⎇ feat/impact-reviewer ← feat/bot-map  +6 -1 · 2 files
@@ -33,13 +33,13 @@ Requires **Python 3.8+** and **git** on your `PATH`. No other dependencies.
 **Windows (PowerShell)**
 
 ```powershell
-irm https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 | iex
 ```
 
 **macOS / Linux / Git Bash**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash
 ```
 
 That's a **global** install: it copies the script to `~/.claude/glance/glance.py` and sets `statusLine` in `~/.claude/settings.json`. Your other settings are kept, and any status line you had before is saved so `--uninstall` can restore it.
@@ -57,11 +57,11 @@ That's a **global** install: it copies the script to `~/.claude/glance/glance.py
 From a one-liner, pass options like this:
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.ps1))) -AllAccounts
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -AllAccounts
 ```
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.sh | bash -s -- --all-accounts
+curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --all-accounts
 ```
 
 **Project install** writes to `.claude/settings.local.json`, which is personal and not committed. It also adds `.claude/glance/` to `.git/info/exclude`, so the copied script never shows up in `git status`.
@@ -90,7 +90,7 @@ If you run several Claude accounts with `CLAUDE_CONFIG_DIR` (e.g. `~/.claude-wor
 
 Status line 3 dòng cho Claude Code: model, effort, branch (kèm nhánh gốc), số dòng thay đổi, context, quota 5h/7d kèm giờ reset, token, tỉ lệ cache hit và thời gian cache còn "ấm".
 
-Cài nhanh trên Windows: `irm https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/claude-glance/main/install.ps1 | iex`
+Cài nhanh trên Windows: `irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 | iex`
 
 - Cài cho mọi tài khoản: thêm `-AllAccounts`.
 - Chỉ cho repo hiện tại: thêm `-Project`.
