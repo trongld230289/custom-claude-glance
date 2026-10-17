@@ -2,9 +2,9 @@
 # claude-glance — a 3-line, truecolor status line for Claude Code
 # https://github.com/YOUR_GITHUB_USERNAME/claude-glance
 #
-# ✦ model  ·  effort ●●●○○  ·  ⎇ branch ← gốc  +add -del · n files
-#   ctx ━━━━━━━━━━ 28%  │ 5h ▰▱▱▱▱▱   5% ↻ 4h56  │ 7d ▰▰▱▱▱▱  25% ↻ 6d11h
-#   ↓ 276.9k in ↑ 663 out │ ◎ 273.4k cache 98% hit │ 42m session  ·  cache warm 54m
+# ╭ ✦ model  ·  effort ●●●○○  ·  ⎇ branch ← gốc  +add -del · n files
+# ├ ctx ━━━━━━━━━━ 28%  │ 5h ▰▱▱▱▱▱   5% ↻ 4h56  │ 7d ▰▰▱▱▱▱  25% ↻ 6d11h
+# ╰ ↓ 276.9k in ↑ 663 out │ ◎ 273.4k cache 98% hit │ 42m session  ·  cache warm 54m
 import json, os, re, subprocess, sys, tempfile, time, unicodedata
 
 try:
@@ -216,14 +216,14 @@ if g["branch"]:
         r1c2 += "  " + link("file:///" + g["diff"].replace("\\", "/"), ch)  # Ctrl+click → xem diff đầy đủ
 
 # hàng 2
-r2c0 = f"  {fg(MUTED)}ctx {bar(pct, 10)} {fg(heat(pct))}{BOLD}{pct:>3}%{RST}"
+r2c0 = f"{fg(MUTED)}ctx {bar(pct, 10)} {fg(heat(pct))}{BOLD}{pct:>3}%{RST}"
 r2c1 = meter("5h", five, 6, "#67e8f9")
 r2c2 = meter("7d", week, 6, "#a5b4fc")
 
 # hàng 3
 r3c0 = ""
 if cw.get("total_input_tokens") or cw.get("total_output_tokens"):
-    r3c0 = (f"  {fg('#60a5fa')}↓ {BOLD}{kf(cw.get('total_input_tokens'))}{RST}{fg(MUTED)} in{RST} "
+    r3c0 = (f"{fg('#60a5fa')}↓ {BOLD}{kf(cw.get('total_input_tokens'))}{RST}{fg(MUTED)} in{RST} "
             f"{fg('#c084fc')}↑ {BOLD}{kf(cw.get('total_output_tokens'))}{RST}{fg(MUTED)} out{RST}")
 cache_read, hit = cu.get("cache_read_input_tokens"), pc.get("hit_ratio")
 r3c1 = ""
@@ -247,7 +247,7 @@ if pc.get("caching_observed"):
 
 # Dòng 1 = tiêu đề, nối bằng dấu · (không căn cột)
 DOT = f"  {fg(SEP_C)}·{RST}  "
-print(DOT.join(x for x in (r1c0, r1c1, r1c2) if x))
+out = [DOT.join(x for x in (r1c0, r1c1, r1c2) if x)]
 
 # Dòng 2–3 = bảng 2 hàng, kẻ dọc │, các cột căn thẳng
 grid = [r for r in ([r2c0, r2c1, r2c2], [r3c0, r3c1, r3c2]) if any(r)]
@@ -257,4 +257,9 @@ if grid:
     for r in grid:
         last = max(i for i in range(3) if r[i])
         cells = [r[c] + " " * (widths[c] - vlen(r[c])) if c < last else r[c] for c in range(last + 1)]
-        print(GAP.join(cells))
+        out.append(GAP.join(cells))
+
+# Thanh dọc bên trái ╭ ├ ╰, đổi màu hồng → tím → xanh
+for i, line in enumerate(out):
+    glyph = "◆" if len(out) == 1 else "╭" if i == 0 else "╰" if i == len(out) - 1 else "├"
+    print(f"{fg(RAIL[min(i, len(RAIL) - 1)])}{glyph}{RST} {line}")
