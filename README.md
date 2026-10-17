@@ -28,49 +28,85 @@ Bars and percentages turn green → yellow → red as they fill. Numbers use fix
 
 ## Install
 
-Requires **Python 3.8+** and **git** on your `PATH`. No other dependencies.
+You need **Python 3.8+** and **git** on your `PATH`. Nothing else.
 
-**Windows (PowerShell)**
+Pick the line that matches what you want, paste it into a terminal, and press Enter.
+
+### Windows (PowerShell)
+
+Install for your Claude account (most people want this):
 
 ```powershell
 irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 | iex
 ```
 
-**macOS / Linux / Git Bash**
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash
-```
-
-That's a **global** install: it copies the script to `~/.claude/glance/glance.py` and sets `statusLine` in `~/.claude/settings.json`. Your other settings are kept, and any status line you had before is saved so `--uninstall` can restore it.
-
-### Options
-
-| Goal | Windows | macOS / Linux |
-|---|---|---|
-| Global, current account | `.\install.ps1` | `./install.sh` |
-| Global, **every** account (`~/.claude` + all `~/.claude-*`) | `.\install.ps1 -AllAccounts` | `./install.sh --all-accounts` |
-| Only **this repo** | `.\install.ps1 -Project` | `./install.sh --project` |
-| A specific repo | `.\install.ps1 -Project -Path C:\code\app` | `./install.sh --project ~/code/app` |
-| Uninstall | add `-Uninstall` | add `--uninstall` |
-
-From a one-liner, pass options like this:
+Install for **every** Claude account (`~/.claude` and all `~/.claude-*`):
 
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -AllAccounts
 ```
 
+Install for **one repo only**. First `cd` into the repo, then run:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Project
+```
+
+Uninstall (restores the status line you had before):
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Uninstall
+```
+
+### macOS / Linux / Git Bash
+
+Install for your Claude account (most people want this):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash
+```
+
+Install for **every** Claude account (`~/.claude` and all `~/.claude-*`):
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --all-accounts
 ```
 
-**Project install** writes to `.claude/settings.local.json`, which is personal and not committed. It also adds `.claude/glance/` to `.git/info/exclude`, so the copied script never shows up in `git status`.
+Install for **one repo only**. First `cd` into the repo, then run:
 
-**Update:** run the same install command again.
+```bash
+curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --project
+```
 
-### Multiple accounts
+Uninstall (restores the status line you had before):
 
-If you run several Claude accounts with `CLAUDE_CONFIG_DIR` (e.g. `~/.claude-work`), use `--all-accounts`. Every account then points at the same shared script, and the account name appears next to the model.
+```bash
+curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --uninstall
+```
+
+### After installing
+
+Open a **new** Claude Code session and send one message. The status line appears after Claude's first reply.
+
+To **update**, run the same install command again.
+
+### What the installer changes
+
+- **Account install** copies the script to `~/.claude/glance/glance.py` and sets `statusLine` in `~/.claude/settings.json`. Your other settings are kept, and any previous status line is saved so uninstall can restore it.
+- **Repo install** writes to `.claude/settings.local.json` in that repo. That file is personal and not committed. It also adds `.claude/glance/` to `.git/info/exclude`, so the copied script never shows up in `git status`.
+- **All accounts** is for people who run several accounts with `CLAUDE_CONFIG_DIR` (for example `~/.claude-work`). Every account points at the same script, and the account name appears next to the model.
+
+### From a clone (optional)
+
+If you cloned the repo, you can run the installers directly. The flags are the same as above:
+
+| Goal | Windows | macOS / Linux |
+|---|---|---|
+| Your account | `.\install.ps1` | `./install.sh` |
+| Every account | `.\install.ps1 -AllAccounts` | `./install.sh --all-accounts` |
+| This repo | `.\install.ps1 -Project` | `./install.sh --project` |
+| Another repo | `.\install.ps1 -Project -Path C:\code\app` | `./install.sh --project ~/code/app` |
+| Uninstall | `.\install.ps1 -Uninstall` | `./install.sh --uninstall` |
 
 ## Troubleshooting
 
@@ -90,11 +126,27 @@ If you run several Claude accounts with `CLAUDE_CONFIG_DIR` (e.g. `~/.claude-wor
 
 Status line 3 dòng cho Claude Code: model, effort, branch (kèm nhánh gốc), số dòng thay đổi, context, quota 5h/7d kèm giờ reset, token, tỉ lệ cache hit và thời gian cache còn "ấm".
 
-Cài nhanh trên Windows: `irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 | iex`
+Cần có **Python 3.8+** và **git**. Chọn đúng một lệnh, dán vào terminal rồi Enter.
 
-- Cài cho mọi tài khoản: thêm `-AllAccounts`.
-- Chỉ cho repo hiện tại: thêm `-Project`.
-- Gỡ: thêm `-Uninstall`.
+**Windows (PowerShell)**
+
+| Muốn làm gì | Lệnh |
+|---|---|
+| Cài cho tài khoản Claude đang dùng | `irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 \| iex` |
+| Cài cho mọi tài khoản | `& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -AllAccounts` |
+| Chỉ cài cho repo hiện tại (cd vào repo trước) | `& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Project` |
+| Gỡ cài đặt | `& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Uninstall` |
+
+**macOS / Linux / Git Bash**
+
+| Muốn làm gì | Lệnh |
+|---|---|
+| Cài cho tài khoản Claude đang dùng | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash` |
+| Cài cho mọi tài khoản | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash -s -- --all-accounts` |
+| Chỉ cài cho repo hiện tại (cd vào repo trước) | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash -s -- --project` |
+| Gỡ cài đặt | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash -s -- --uninstall` |
+
+Cài xong, mở một phiên Claude Code **mới** và gửi một tin nhắn, status line sẽ hiện sau câu trả lời đầu tiên. Muốn cập nhật thì chạy lại đúng lệnh cài.
 
 ## License
 
