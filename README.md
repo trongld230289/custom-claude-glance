@@ -5,8 +5,8 @@ A colourful 3-line status line for [Claude Code](https://code.claude.com/docs/en
 ![custom-claude-glance preview](assets/preview.png)
 
 ```
-✦ Opus 5.5  ·  high ●●●○○  ·  ⎇ feat/impact-reviewer ← feat/bot-map  +6 -1 · 2 files
-  ctx ━━━━━━━━━━  31%      │ 5h ▰▱▱▱▱▱  16% ↻ 4h39   │ 7d ▰▰▱▱▱▱  26% ↻ 6d10h
+✦ Opus 5.5  ·  high ●●●○○  ·  ⎇ feat/impact-reviewer ← feat/bot-map  +842 -97 · 12 files · 2 uncommitted
+  ctx ━━━━━━━━━━━━━━  31%  │ 5h ▰▱▱▱▱▱  16% ↻ 4h39   │ 7d ▰▰▱▱▱▱  26% ↻ 6d10h
   ↓ 310.4k in ↑   1.5k out │ ◎ 307.4k cache  98% hit │ 42m session  ·  cache warm 53m
 ```
 
@@ -17,7 +17,8 @@ A colourful 3-line status line for [Claude Code](https://code.claude.com/docs/en
 | 1 | `✦ Opus 5.5` | Current model. A second account shows as `@work`, `@acc2`… (from `CLAUDE_CONFIG_DIR`) |
 | | `high ●●●○○` | Reasoning effort (low → max) |
 | | `⎇ branch ← base` | Git branch and the branch it was created from |
-| | `+6 -1 · 2 files` | Uncommitted changes vs `HEAD`. **Ctrl/Cmd+click** opens the full diff |
+| | `+842 -97 · 12 files` | Everything the branch changed since it left its base branch, uncommitted edits included. On `main` (no base) it counts only uncommitted edits. Untracked files are not counted. **Ctrl/Cmd+click** opens the full diff |
+| | `2 uncommitted` | Files with edits not committed yet (shown only on a feature branch) |
 | 2 | `ctx` | Context window used |
 | | `5h` / `7d` | Subscription usage limits, with time until reset (`↻`) |
 | 3 | `↓ in ↑ out` | Tokens in the context / last output |
@@ -114,7 +115,7 @@ If you cloned the repo, you can run the installers directly. The flags are the s
 - **Colours look wrong:** use a truecolor terminal (Windows Terminal, VS Code, iTerm2, WezTerm…). The legacy Windows console does not support it.
 - **`│` separators slightly crooked in VS Code:** set `terminal.integrated.gpuAcceleration` to `on`, so every glyph sits on the cell grid.
 - **`⎇` shows as a box:** use a font that has it, such as Cascadia Code or any Nerd Font.
-- **Ctrl+click on `+6 -1` does nothing:** set `FORCE_HYPERLINK=1` in your environment (`setx FORCE_HYPERLINK 1` on Windows), then restart the terminal.
+- **Ctrl+click on `+842 -97` does nothing:** set `FORCE_HYPERLINK=1` in your environment (`setx FORCE_HYPERLINK 1` on Windows), then restart the terminal.
 
 ## Customise
 

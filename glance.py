@@ -2,8 +2,8 @@
 # custom-claude-glance — a 3-line, truecolor status line for Claude Code
 # https://github.com/trongld230289/custom-claude-glance
 #
-# ╭ ✦ model  ·  effort ●●●○○  ·  ⎇ branch ← gốc  +add -del · n files
-# ├ ctx ━━━━━━━━━━ 28%  │ 5h ▰▱▱▱▱▱   5% ↻ 4h56  │ 7d ▰▰▱▱▱▱  25% ↻ 6d11h
+# ╭ ✦ model  ·  effort ●●●○○  ·  ⎇ branch ← gốc  +add -del · n files · n uncommitted
+# ├ ctx ━━━━━━━━━━━━━━ 28%  │ 5h ▰▱▱▱▱▱   5% ↻ 4h56  │ 7d ▰▰▱▱▱▱  25% ↻ 6d11h
 # ╰ ↓ 276.9k in ↑ 663 out │ ◎ 273.4k cache 98% hit │ 42m session  ·  cache warm 54m
 import json, os, re, subprocess, sys, tempfile, time, unicodedata
 
@@ -125,12 +125,22 @@ def git_info(cwd, sid):
                 return json.load(f)
     except Exception:
         pass
-    info = {"branch": "", "base": "", "add": 0, "rem": 0, "files": 0, "names": [], "diff": diff_file}
+    info = {"branch": "", "base": "", "add": 0, "rem": 0, "files": 0, "dirty": 0, "names": [], "diff": diff_file}
     if git(["rev-parse", "--is-inside-work-tree"], cwd) == "true":
         info["branch"] = git(["branch", "--show-current"], cwd) or "detached"
         info["base"] = base_branch(cwd, info["branch"])
+        # Thay đổi của cả nhánh: từ điểm tách khỏi nhánh gốc tới working tree (gồm cả phần chưa commit).
+        # Không có nhánh gốc (đang ở main…) thì chỉ tính phần chưa commit so với HEAD.
+        since = "HEAD"
+        if info["base"]:
+            for ref in (info["base"], "origin/" + info["base"]):
+                mb = git(["merge-base", ref, "HEAD"], cwd)
+                if mb:
+                    since = mb
+                    break
+        info["dirty"] = len(git(["diff", "HEAD", "--name-only"], cwd).splitlines())
         changed = []
-        for line in git(["diff", "HEAD", "--numstat"], cwd).splitlines():
+        for line in git(["diff", since, "--numstat"], cwd).splitlines():
             a, r, path = (line.split("\t") + ["", "", ""])[:3]
             a, r = int(a) if a.isdigit() else 0, int(r) if r.isdigit() else 0
             info["files"] += 1
@@ -141,10 +151,10 @@ def git_info(cwd, sid):
         # file đổi nhiều nhất lên trước
         info["names"] = [n for _, n in sorted(changed, key=lambda x: -x[0])]
         if info["files"]:
-            stat = git(["diff", "HEAD", "--stat"], cwd)
-            full = git(["diff", "HEAD"], cwd)
+            stat = git(["diff", since, "--stat"], cwd)
+            full = git(["diff", since], cwd)
             with open(diff_file, "w", encoding="utf-8") as f:
-                f.write(f"Branch: {info['branch']}\n\n{stat}\n\n{'=' * 60}\n\n{full}\n")
+                f.write(f"Branch: {info['branch']}" + (f" vs {info['base']} (incl. uncommitted)" if since != "HEAD" else " (uncommitted)") + f"\n\n{stat}\n\n{'=' * 60}\n\n{full}\n")
     try:
         with open(cache, "w", encoding="utf-8") as f:
             json.dump(info, f)
@@ -214,9 +224,11 @@ if g["branch"]:
         ch = (f"{fg('#4ade80')}{BOLD}+{g['add']}{RST} {fg('#fb7185')}{BOLD}-{g['rem']}{RST}"
               f" {fg(MUTED)}· {n} file{'s' if n > 1 else ''}{RST}")
         r1c2 += "  " + link("file:///" + g["diff"].replace("\\", "/"), ch)  # Ctrl+click → xem diff đầy đủ
+        if g.get("base") and g.get("dirty"):
+            r1c2 += f" {fg(MUTED)}· {fg('#fbbf24')}{g['dirty']}{fg(MUTED)} uncommitted{RST}"
 
 # hàng 2
-r2c0 = f"{fg(MUTED)}ctx {bar(pct, 10)} {fg(heat(pct))}{BOLD}{pct:>3}%{RST}"
+r2c0 = f"{fg(MUTED)}ctx {bar(pct, 14)} {fg(heat(pct))}{BOLD}{pct:>3}%{RST}"
 r2c1 = meter("5h", five, 6, "#67e8f9")
 r2c2 = meter("7d", week, 6, "#a5b4fc")
 
