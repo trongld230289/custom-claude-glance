@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # glanceline installer for macOS / Linux / Git Bash
 #
-#   One-liner (global):
+#   One-liner (asks where to install: your account, every account, this repo, or uninstall):
 #     curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash
 #   One-liner with options:
 #     curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash -s -- --all-accounts

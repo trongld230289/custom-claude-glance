@@ -1,6 +1,6 @@
 # glanceline installer for Windows (PowerShell 5.1+)
 #
-#   One-liner (global):
+#   One-liner (asks where to install: your account, every account, this repo, or uninstall):
 #     irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1 | iex
 #   One-liner with options:
 #     iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -AllAccounts"

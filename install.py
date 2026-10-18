@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """glanceline installer (cross-platform, no dependencies).
 
-  python install.py                     # global: your Claude Code account (~/.claude)
+  python install.py                     # asks: your account, every account, this repo, or uninstall
+                                        # (no keyboard, as in CI: your account)
   python install.py --all-accounts      # global: ~/.claude and every ~/.claude-* account
   python install.py --project [PATH]    # only one repo (default: current folder)
   python install.py --uninstall [...]   # remove, same scope flags as above
@@ -152,14 +153,83 @@ def uninstall(script_dir, settings_files, shared):
     print("Done.")
 
 
+def repo_root():
+    try:
+        out = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, timeout=10)
+        return os.path.abspath(out.stdout.strip()) if out.returncode == 0 and out.stdout.strip() else None
+    except Exception:
+        return None
+
+
+def ask(prompt):
+    """Read one answer from the keyboard, even under `curl | bash` where stdin is the script.
+    None when there is no keyboard (CI, a pipe with no terminal)."""
+    if sys.stdin and sys.stdin.isatty():
+        try:
+            return input(prompt)
+        except EOFError:
+            return None
+    for dev in ("CONIN$", "/dev/tty") if os.name == "nt" else ("/dev/tty",):
+        try:
+            with open(dev, encoding="utf-8", errors="replace") as tty:
+                sys.stdout.write(prompt)
+                sys.stdout.flush()
+                return tty.readline()
+        except OSError:
+            continue
+    return None
+
+
+def choose():
+    """No flags given: let the person pick where to install. Returns argv-style flags."""
+    others = [p for p in glob.glob(os.path.join(HOME, ".claude-*")) if os.path.isdir(p)]
+    root = repo_root()
+    options = [("My Claude account (every project)", [])]
+    if others:
+        options.append((f"Every Claude account (~/.claude + {len(others)} more)", ["--all-accounts"]))
+    if root:
+        options.append((f"Only this repo ({root})", ["--project", root]))
+    options.append(("Uninstall", ["--uninstall-everywhere"]))
+
+    print("Where should glanceline go?")
+    for i, (label, _) in enumerate(options, 1):
+        print(f"  {i}) {label}" + ("   [default]" if i == 1 else ""))
+    while True:
+        answer = ask(f"Choose 1-{len(options)} (Enter = 1): ")
+        if answer is None:  # no keyboard: take the default
+            print("1")
+            return []
+        answer = answer.strip()
+        if answer == "":
+            return []
+        if answer.isdigit() and 1 <= int(answer) <= len(options):
+            return options[int(answer) - 1][1]
+        print(f"  Type a number from 1 to {len(options)}.")
+
+
+def uninstall_everywhere():
+    """Remove glanceline from every account and from the current repo, wherever it is set."""
+    print("Scope: everywhere")
+    uninstall(SHARED_DIR, [os.path.join(d, "settings.json") for d in account_dirs(True)], True)
+    root = repo_root()
+    if root and uses_glance(os.path.join(root, ".claude", "settings.local.json")):
+        uninstall(os.path.join(root, ".claude", "glance"), [os.path.join(root, ".claude", "settings.local.json")], False)
+
+
 def main():
-    ap = argparse.ArgumentParser(description="Install the glanceline status line for Claude Code.")
+    ap = argparse.ArgumentParser(description="Install the glanceline status line for Claude Code. "
+                                             "With no flags it asks where to install.")
     ap.add_argument("--project", nargs="?", const=os.getcwd(), metavar="PATH",
                     help="install only for this repo (default: current folder)")
     ap.add_argument("--all-accounts", action="store_true",
                     help="global install for ~/.claude and every ~/.claude-* account")
     ap.add_argument("--uninstall", action="store_true", help="remove instead of install")
-    a = ap.parse_args()
+    ap.add_argument("--uninstall-everywhere", action="store_true", help=argparse.SUPPRESS)
+    a = ap.parse_args(sys.argv[1:] or choose())
+
+    if a.uninstall_everywhere:
+        uninstall_everywhere()
+        return
 
     if a.project:
         proj = os.path.abspath(a.project)

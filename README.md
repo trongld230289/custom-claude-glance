@@ -16,4 +16,4 @@ macOS / Linux:
 curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash
 ```
 
-Needs Python 3.8+ and git.
+It asks where to install (your account, this repo, or uninstall). Needs Python 3.8+ and git.
