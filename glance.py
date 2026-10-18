@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# custom-claude-glance — a 3-line, truecolor status line for Claude Code
-# https://github.com/trongld230289/custom-claude-glance
+# glanceline — a 3-line, truecolor status line for Claude Code
+# https://github.com/trongld230289/glanceline
 #
 # ╭ ✦ model  ·  effort ●●●○○  ·  ⎇ branch ← gốc  +add -del · n files · n uncommitted
 # ├ ctx ━━━━━━━━━━━━━━ 28%  │ 5h ▰▱▱▱▱▱   5% ↻ 4h56  │ 7d ▰▰▱▱▱▱  25% ↻ 6d11h

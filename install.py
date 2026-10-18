@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""custom-claude-glance installer (cross-platform, no dependencies).
+"""glanceline installer (cross-platform, no dependencies).
 
   python install.py                     # global: your Claude Code account (~/.claude)
   python install.py --all-accounts      # global: ~/.claude and every ~/.claude-* account
@@ -153,7 +153,7 @@ def uninstall(script_dir, settings_files, shared):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Install the custom-claude-glance status line for Claude Code.")
+    ap = argparse.ArgumentParser(description="Install the glanceline status line for Claude Code.")
     ap.add_argument("--project", nargs="?", const=os.getcwd(), metavar="PATH",
                     help="install only for this repo (default: current folder)")
     ap.add_argument("--all-accounts", action="store_true",

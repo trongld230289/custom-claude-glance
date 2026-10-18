@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# custom-claude-glance installer for macOS / Linux / Git Bash
+# glanceline installer for macOS / Linux / Git Bash
 #
 #   One-liner (global):
-#     curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash
+#     curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash
 #   One-liner with options:
-#     curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --all-accounts
+#     curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash -s -- --all-accounts
 #   From a clone:
 #     ./install.sh [--project [PATH]] [--all-accounts] [--uninstall]
 set -euo pipefail
-REPO="trongld230289/custom-claude-glance"
+REPO="trongld230289/glanceline"
 BRANCH="main"
 
 PY="$(command -v python3 || command -v python || true)"

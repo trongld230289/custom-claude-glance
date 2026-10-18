@@ -1,8 +1,8 @@
-# custom-claude-glance
+# glanceline
 
 A colourful 3-line status line for [Claude Code](https://code.claude.com/docs/en/statusline): everything you want to know about your session, at a glance.
 
-![custom-claude-glance preview](assets/preview.png)
+![glanceline preview](assets/preview.png)
 
 ```
 ✦ Opus 5.5  ·  high ●●●○○  ·  ⎇ feat/impact-reviewer ← feat/bot-map  +842 -97 · 12 files · 2 uncommitted
@@ -38,25 +38,25 @@ Pick the line that matches what you want, paste it into a terminal, and press En
 Install for your Claude account (most people want this):
 
 ```powershell
-irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1 | iex
 ```
 
 Install for **every** Claude account (`~/.claude` and all `~/.claude-*`):
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -AllAccounts
+iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -AllAccounts"
 ```
 
 Install for **one repo only**. First `cd` into the repo, then run:
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Project
+iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -Project"
 ```
 
 Uninstall (restores the status line you had before):
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Uninstall
+iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -Uninstall"
 ```
 
 ### macOS / Linux / Git Bash
@@ -64,25 +64,25 @@ Uninstall (restores the status line you had before):
 Install for your Claude account (most people want this):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash
 ```
 
 Install for **every** Claude account (`~/.claude` and all `~/.claude-*`):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --all-accounts
+curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash -s -- --all-accounts
 ```
 
 Install for **one repo only**. First `cd` into the repo, then run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --project
+curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash -s -- --project
 ```
 
 Uninstall (restores the status line you had before):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh | bash -s -- --uninstall
+curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh | bash -s -- --uninstall
 ```
 
 ### After installing
@@ -133,19 +133,19 @@ Cần có **Python 3.8+** và **git**. Chọn đúng một lệnh, dán vào ter
 
 | Muốn làm gì | Lệnh |
 |---|---|
-| Cài cho tài khoản Claude đang dùng | `irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1 \| iex` |
-| Cài cho mọi tài khoản | `& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -AllAccounts` |
-| Chỉ cài cho repo hiện tại (cd vào repo trước) | `& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Project` |
-| Gỡ cài đặt | `& ([scriptblock]::Create((irm https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.ps1))) -Uninstall` |
+| Cài cho tài khoản Claude đang dùng | `irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1 \| iex` |
+| Cài cho mọi tài khoản | `iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -AllAccounts"` |
+| Chỉ cài cho repo hiện tại (cd vào repo trước) | `iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -Project"` |
+| Gỡ cài đặt | `iex "& {$(irm https://raw.githubusercontent.com/trongld230289/glanceline/main/install.ps1)} -Uninstall"` |
 
 **macOS / Linux / Git Bash**
 
 | Muốn làm gì | Lệnh |
 |---|---|
-| Cài cho tài khoản Claude đang dùng | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash` |
-| Cài cho mọi tài khoản | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash -s -- --all-accounts` |
-| Chỉ cài cho repo hiện tại (cd vào repo trước) | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash -s -- --project` |
-| Gỡ cài đặt | `curl -fsSL https://raw.githubusercontent.com/trongld230289/custom-claude-glance/main/install.sh \| bash -s -- --uninstall` |
+| Cài cho tài khoản Claude đang dùng | `curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh \| bash` |
+| Cài cho mọi tài khoản | `curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh \| bash -s -- --all-accounts` |
+| Chỉ cài cho repo hiện tại (cd vào repo trước) | `curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh \| bash -s -- --project` |
+| Gỡ cài đặt | `curl -fsSL https://raw.githubusercontent.com/trongld230289/glanceline/main/install.sh \| bash -s -- --uninstall` |
 
 Cài xong, mở một phiên Claude Code **mới** và gửi một tin nhắn, status line sẽ hiện sau câu trả lời đầu tiên. Muốn cập nhật thì chạy lại đúng lệnh cài.
 
