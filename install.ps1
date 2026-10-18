@@ -25,7 +25,7 @@ foreach ($c in @("py", "python", "python3")) {
 }
 if (-not $py) {
     Write-Host "Python 3 was not found. Install it from https://www.python.org/downloads/ (tick 'Add python.exe to PATH'), then run this again." -ForegroundColor Red
-    exit 1
+    return  # not exit: under "irm | iex" exit would close the user's PowerShell window
 }
 
 # Use the local clone if we are inside one, otherwise download the two files
