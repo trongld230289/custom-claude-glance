@@ -175,6 +175,25 @@ cu = cw.get("current_usage") or {}
 pc = d.get("prompt_cache") or {}
 pct = int(cw.get("used_percentage") or 0)
 rl = d.get("rate_limits") or {}
+
+# 5h/7d tính theo tài khoản, nhưng Claude Code chỉ gửi sau lượt gọi API đầu tiên của phiên.
+# Lưu lần đọc gần nhất để phiên mới mở vẫn hiện số; cửa sổ đã qua giờ reset thì bỏ.
+RL_CACHE = os.path.join(tempfile.gettempdir(), f"glanceline-rl-{acc or 'default'}.json")
+if rl.get("five_hour") or rl.get("seven_day"):
+    try:
+        with open(RL_CACHE, "w", encoding="utf-8") as f:
+            json.dump(rl, f)
+    except Exception:
+        pass
+else:
+    try:
+        with open(RL_CACHE, encoding="utf-8") as f:
+            rl = json.load(f)
+    except Exception:
+        rl = {}
+    now = time.time()
+    rl = {key: w for key, w in rl.items()
+          if isinstance(w, dict) and (w.get("resets_at") or 0) > now}
 five, week = rl.get("five_hour") or {}, rl.get("seven_day") or {}
 cwd = (d.get("workspace") or {}).get("current_dir") or d.get("cwd") or os.getcwd()
 g = git_info(cwd, d.get("session_id", "x"))
@@ -194,7 +213,8 @@ def dur(ms):
 
 def meter(label, w, width, accent):
     if not w or w.get("used_percentage") is None:
-        return ""
+        # chưa có số (lần đầu dùng, chưa gửi prompt): giữ chỗ để bố cục không nhảy
+        return f"{fg(MUTED)}{label} {bar(0, width, '▰', '▱')} {fg(FAINT)}{BOLD}{'—':>3} {RST}"
     p = w["used_percentage"]
     s = f"{fg(MUTED)}{label} {bar(p, width, '▰', '▱')} {fg(heat(p))}{BOLD}{p:>3.0f}%{RST}"
     if w.get("resets_at"):
@@ -233,19 +253,16 @@ r2c1 = meter("5h", five, 6, "#67e8f9")
 r2c2 = meter("7d", week, 6, "#a5b4fc")
 
 # hàng 3
-r3c0 = ""
-if cw.get("total_input_tokens") or cw.get("total_output_tokens"):
-    r3c0 = (f"{fg('#60a5fa')}↓ {BOLD}{kf(cw.get('total_input_tokens'))}{RST}{fg(MUTED)} in{RST} "
-            f"{fg('#c084fc')}↑ {BOLD}{kf(cw.get('total_output_tokens'))}{RST}{fg(MUTED)} out{RST}")
+# Phiên mới chưa có lượt nào: vẫn hiện đủ ô với số 0 / — để dòng 3 không bị khuyết
+r3c0 = (f"{fg('#60a5fa')}↓ {BOLD}{kf(cw.get('total_input_tokens'))}{RST}{fg(MUTED)} in{RST} "
+        f"{fg('#c084fc')}↑ {BOLD}{kf(cw.get('total_output_tokens'))}{RST}{fg(MUTED)} out{RST}")
 cache_read, hit = cu.get("cache_read_input_tokens"), pc.get("hit_ratio")
-r3c1 = ""
-if cache_read is not None or hit is not None:
-    r3c1 = f"{fg('#fbbf24')}◎ {BOLD}{kf(cache_read)}{RST}{fg(MUTED)} cache{RST}"
-    if hit is not None:
-        r3c1 += f" {fg(heat(100 - hit * 100))}{BOLD}{hit * 100:>3.0f}%{RST}{fg(MUTED)} hit{RST}"
-r3c2 = ""
-if dur_ms:
-    r3c2 = f"{fg('#f0abfc')}{BOLD}{dur(dur_ms)}{RST}{fg(MUTED)} session{RST}"
+r3c1 = f"{fg('#fbbf24')}◎ {BOLD}{kf(cache_read)}{RST}{fg(MUTED)} cache{RST}"
+if hit is not None:
+    r3c1 += f" {fg(heat(100 - hit * 100))}{BOLD}{hit * 100:>3.0f}%{RST}{fg(MUTED)} hit{RST}"
+else:
+    r3c1 += f" {fg(FAINT)}{BOLD}{'—':>3} {RST}{fg(MUTED)} hit{RST}"
+r3c2 = f"{fg('#f0abfc')}{BOLD}{dur(dur_ms)}{RST}{fg(MUTED)} session{RST}"
 # Cache còn "ấm" bao lâu: nhắn tiếp trước khi hết giờ thì đọc lại cache, đỡ tốn quota
 exp = pc.get("expires_at")
 if pc.get("caching_observed"):
