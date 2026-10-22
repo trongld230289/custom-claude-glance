@@ -131,7 +131,7 @@ def install(script_dir, settings_files):
         print(f"+ settings  {s}" + ("   (old status line saved, --uninstall restores it)" if prev and MARK not in (prev.get("command") or "") else ""))
     print(f"\n  command:  {cmd}")
     demo(dst)
-    print("Done. Claude Code picks this up automatically. A new session shows the last 5h/7d numbers; the first reply refreshes them.")
+    print("Done.")
 
 
 def uninstall(script_dir, settings_files, shared):
